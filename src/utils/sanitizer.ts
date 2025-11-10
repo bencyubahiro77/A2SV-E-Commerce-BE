@@ -16,6 +16,12 @@ export const sanitizeEmail = (email: string): string => {
   );
 };
 
+const removeDangerousChars = (input: string): string => {
+  if (!input) return '';
+  // Remove null bytes, control characters
+  return input.replace(/[\x00-\x1F\x7F]/g, '');
+};
+
 export const sanitizeString = (input: string): string => {
   if (!input) return '';
   return removeDangerousChars(input.trim());
@@ -50,10 +56,4 @@ export const sanitizeObject = <T extends Record<string, any>>(obj: T): T => {
   }
 
   return sanitized;
-};
-
-export const removeDangerousChars = (input: string): string => {
-  if (!input) return '';
-  // Remove null bytes, control characters
-  return input.replace(/[\x00-\x1F\x7F]/g, '');
 };

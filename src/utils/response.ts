@@ -61,8 +61,3 @@ export const paginated = <T>(
 export const created = <T>(res: Response, message: string, data?: T): Response => {
   return success(res, message, data, 201);
 };
-
-// Send no content response
-export const noContent = (res: Response): Response => {
-  return res.status(204).send();
-};
