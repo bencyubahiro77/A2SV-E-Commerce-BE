@@ -1,0 +1,297 @@
+components:
+  schemas:
+    OrderItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        orderId:
+          type: string
+          format: uuid
+        productId:
+          type: string
+          format: uuid
+          description: "ID of the product (no need to duplicate in nested product)"
+        quantity:
+          type: integer
+          example: 2
+        price:
+          type: number
+          format: decimal
+          example: 99.99
+          description: "Price at the time of order placement"
+        createdAt:
+          type: string
+          format: date-time
+        product:
+          type: object
+          description: "Product details (id omitted to avoid redundancy with productId)"
+          properties:
+            name:
+              type: string
+              example: "Wireless Mouse"
+            price:
+              type: number
+              format: decimal
+              example: 49.99
+              description: "Current price of the product"
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        userId:
+          type: string
+          format: uuid
+        description:
+          type: string
+          nullable: true
+        totalPrice:
+          type: number
+          format: decimal
+          example: 199.98
+        status:
+          type: string
+          enum: [PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED]
+          example: "PENDING"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        orderItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+
+    CreateOrderInput:
+      type: object
+      required:
+        - items
+      properties:
+        items:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required:
+              - productId
+              - quantity
+            properties:
+              productId:
+                type: string
+                format: uuid
+                example: "123e4567-e89b-12d3-a456-426614174000"
+                description: "UUID of the product to order"
+              quantity:
+                type: integer
+                minimum: 1
+                example: 2
+                description: "Quantity of the product to order"
+      example:
+        items:
+          - productId: "123e4567-e89b-12d3-a456-426614174000"
+            quantity: 2
+          - productId: "987e6543-e21c-43f2-b123-987654321000"
+            quantity: 1
+
+    OrderResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Order placed successfully"
+        object:
+          $ref: '#/components/schemas/Order'
+        errors:
+          type: null
+          nullable: true
+
+    OrderListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Orders retrieved successfully"
+        object:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+        errors:
+          type: null
+          nullable: true
+
+paths:
+  /orders:
+    post:
+      tags:
+        - Orders
+      summary: Place a new order
+      description: |
+        Create a new order for one or more products. 
+        - Requires authentication with USER role
+        - Validates product availability and stock
+        - Calculates total price on backend
+        - Uses database transaction (all or nothing)
+        - Automatically decrements product stock
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderInput'
+            examples:
+              singleProduct:
+                summary: Order with single product
+                value:
+                  items:
+                    - productId: "123e4567-e89b-12d3-a456-426614174000"
+                      quantity: 1
+              multipleProducts:
+                summary: Order with multiple products
+                value:
+                  items:
+                    - productId: "123e4567-e89b-12d3-a456-426614174000"
+                      quantity: 2
+                    - productId: "987e6543-e21c-43f2-b123-987654321000"
+                      quantity: 1
+                    - productId: "456e7890-f34d-56g7-h890-123456789000"
+                      quantity: 3
+      responses:
+        '201':
+          description: Order placed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '400':
+          description: Validation error or insufficient stock
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              examples:
+                insufficientStock:
+                  summary: Insufficient stock
+                  value:
+                    success: false
+                    message: "Insufficient stock for Product Laptop Pro 15. Available: 5, Requested: 10"
+                    errors: null
+                validationError:
+                  summary: Validation error
+                  value:
+                    success: false
+                    message: "Validation failed"
+                    errors:
+                      - "Order must contain at least one item"
+                      - "Quantity must be at least 1"
+        '401':
+          description: Unauthorized - No token or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                message: "No token provided"
+                errors: null
+        '403':
+          description: Forbidden - USER role required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                message: "You do not have permission to perform this action"
+                errors: null
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                message: "Product with ID 123e4567-e89b-12d3-a456-426614174000 not found"
+                errors: null
+
+    get:
+      tags:
+        - Orders
+      summary: View order history
+      description: |
+        Retrieve all orders for the authenticated user.
+        - Returns orders sorted by creation date (newest first)
+        - Includes order items and product details
+        - Users can only see their own orders
+        - Returns empty array if no orders exist
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Orders retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderListResponse'
+              examples:
+                withOrders:
+                  summary: User has orders
+                  value:
+                    success: true
+                    message: "Orders retrieved successfully"
+                    object:
+                      - id: "123e4567-e89b-12d3-a456-426614174000"
+                        userId: "user-uuid-123"
+                        totalPrice: 199.98
+                        status: "PENDING"
+                        createdAt: "2024-11-10T10:30:00Z"
+                        updatedAt: "2024-11-10T10:30:00Z"
+                        orderItems:
+                          - id: "item-uuid-1"
+                            productId: "product-uuid-1"
+                            quantity: 2
+                            price: 49.99
+                            product:
+                              name: "Wireless Mouse"
+                              price: 49.99
+                          - id: "item-uuid-2"
+                            productId: "product-uuid-2"
+                            quantity: 1
+                            price: 99.99
+                            product:
+                              name: "Mechanical Keyboard"
+                              price: 99.99
+                    errors: null
+                noOrders:
+                  summary: User has no orders
+                  value:
+                    success: true
+                    message: "Orders retrieved successfully"
+                    object: []
+                    errors: null
+        '401':
+          description: Unauthorized - No token or invalid token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                success: false
+                message: "No token provided"
+                errors: null

@@ -1,12 +1,10 @@
 import validator from 'validator';
 
-// Sanitize email - trim, lowercase, and validate format
 export const sanitizeEmail = (email: string): string => {
   if (!email) return '';
 
   const trimmed = email.trim().toLowerCase();
 
-  // Normalize email (remove dots in Gmail, etc.)
   return (
     validator.normalizeEmail(trimmed, {
       gmail_remove_dots: false,
@@ -18,10 +16,8 @@ export const sanitizeEmail = (email: string): string => {
   );
 };
 
-// Sanitize string - trim and remove dangerous characters
 export const sanitizeString = (input: string): string => {
   if (!input) return '';
-  // Trim whitespace and remove null bytes/control characters
   return removeDangerousChars(input.trim());
 };
 
@@ -38,6 +34,16 @@ export const sanitizeObject = <T extends Record<string, any>>(obj: T): T => {
   for (const key in sanitized) {
     if (typeof sanitized[key] === 'string') {
       sanitized[key] = sanitizeString(sanitized[key]) as any;
+    } else if (Array.isArray(sanitized[key])) {
+      // Handle arrays - map through and sanitize each element
+      sanitized[key] = sanitized[key].map((item: any) => {
+        if (typeof item === 'string') {
+          return sanitizeString(item);
+        } else if (typeof item === 'object' && item !== null) {
+          return sanitizeObject(item);
+        }
+        return item;
+      }) as any;
     } else if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
       sanitized[key] = sanitizeObject(sanitized[key]);
     }
@@ -46,7 +52,6 @@ export const sanitizeObject = <T extends Record<string, any>>(obj: T): T => {
   return sanitized;
 };
 
-// Remove potentially dangerous characters from input
 export const removeDangerousChars = (input: string): string => {
   if (!input) return '';
   // Remove null bytes, control characters
