@@ -6,11 +6,6 @@ import { authRateLimiter } from '../middlewares/security.middleware';
 
 const router = Router();
 
-/**
- * @route   POST /auth/register
- * @desc    Register a new user
- * @access  Public
- */
 router.post(
   '/register',
   authRateLimiter,
@@ -18,11 +13,6 @@ router.post(
   register
 );
 
-/**
- * @route   POST /auth/login
- * @desc    Login user
- * @access  Public
- */
 router.post(
   '/login',
   authRateLimiter,

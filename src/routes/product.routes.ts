@@ -10,11 +10,6 @@ import {
 
 const router = Router();
 
-/**
- * @route   POST /products
- * @desc    Create a new product (Admin only)
- * @access  Private/Admin
- */
 router.post(
   '/',
   authenticate,
@@ -23,30 +18,15 @@ router.post(
   createProduct
 );
 
-/**
- * @route   GET /products
- * @desc    Get all products with pagination and search
- * @access  Public
- */
 router.get(
   '/',
   validate(searchProductSchema, 'query'),
   getProducts
 );
 
-/**
- * @route   GET /products/:id
- * @desc    Get product by ID
- * @access  Public
- */
 router.get('/:id', getProductById);
 
-/**
- * @route   PUT /products/:id
- * @desc    Update product (Admin only)
- * @access  Private/Admin
- */
-router.put(
+router.patch(
   '/:id',
   authenticate,
   authorize('ADMIN'),
@@ -54,11 +34,6 @@ router.put(
   updateProduct
 );
 
-/**
- * @route   DELETE /products/:id
- * @desc    Delete product (Admin only)
- * @access  Private/Admin
- */
 router.delete(
   '/:id',
   authenticate,

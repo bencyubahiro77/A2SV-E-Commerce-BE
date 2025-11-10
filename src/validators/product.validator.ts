@@ -1,47 +1,54 @@
 import Joi from 'joi';
 
-export const createProductSchema = Joi.object({
+const baseProductSchema = Joi.object({
   name: Joi.string()
     .min(3)
     .max(255)
-    .required()
+    .trim()
     .messages({
       'string.min': 'Product name must be at least 3 characters long',
       'string.max': 'Product name must not exceed 255 characters',
+      'string.empty': 'Product name cannot be empty',
       'any.required': 'Product name is required',
     }),
 
   description: Joi.string()
     .min(10)
-    .required()
+    .max(2000)
+    .trim()
     .messages({
       'string.min': 'Product description must be at least 10 characters long',
+      'string.max': 'Product description must not exceed 2000 characters',
       'any.required': 'Product description is required',
     }),
 
   price: Joi.number()
     .positive()
     .precision(2)
-    .required()
+    .max(999999.99)
     .messages({
+      'number.base': 'Price must be a valid number',
       'number.positive': 'Price must be a positive number',
+      'number.max': 'Price cannot exceed 999,999.99',
       'any.required': 'Price is required',
     }),
 
   stock: Joi.number()
     .integer()
     .min(0)
-    .required()
+    .max(999999)
     .messages({
-      'number.integer': 'Stock must be an integer',
+      'number.base': 'Stock must be a valid number',
+      'number.integer': 'Stock must be a whole number',
       'number.min': 'Stock cannot be negative',
+      'number.max': 'Stock cannot exceed 999,999',
       'any.required': 'Stock is required',
     }),
 
   category: Joi.string()
     .min(2)
     .max(100)
-    .required()
+    .trim()
     .messages({
       'string.min': 'Category must be at least 2 characters long',
       'string.max': 'Category must not exceed 100 characters',
@@ -49,50 +56,24 @@ export const createProductSchema = Joi.object({
     }),
 });
 
-export const updateProductSchema = Joi.object({
-  name: Joi.string()
-    .min(3)
-    .max(255)
-    .messages({
-      'string.min': 'Product name must be at least 3 characters long',
-      'string.max': 'Product name must not exceed 255 characters',
-    }),
 
-  description: Joi.string()
-    .min(10)
-    .messages({
-      'string.min': 'Product description must be at least 10 characters long',
-    }),
+export const createProductSchema = baseProductSchema.fork(
+  ['name', 'description', 'price', 'stock', 'category'],
+  (schema) => schema.required()
+);
 
-  price: Joi.number()
-    .positive()
-    .precision(2)
-    .messages({
-      'number.positive': 'Price must be a positive number',
-    }),
-
-  stock: Joi.number()
-    .integer()
-    .min(0)
-    .messages({
-      'number.integer': 'Stock must be an integer',
-      'number.min': 'Stock cannot be negative',
-    }),
-
-  category: Joi.string()
-    .min(2)
-    .max(100)
-    .messages({
-      'string.min': 'Category must be at least 2 characters long',
-      'string.max': 'Category must not exceed 100 characters',
-    }),
-}).min(1).messages({
-  'object.min': 'At least one field must be provided for update',
-});
+export const updateProductSchema = baseProductSchema
+  .fork(
+    ['name', 'description', 'price', 'stock', 'category'],
+    (schema) => schema.optional()
+  )
+  .min(1)
+  .messages({
+    'object.min': 'At least one field must be provided for update',
+  });
 
 export const searchProductSchema = Joi.object({
-  search: Joi.string().allow('').optional(),
+  search: Joi.string().trim().allow('').optional(),
   page: Joi.number().integer().min(1).default(1),
-  limit: Joi.number().integer().min(1).max(100).default(10),
-  pageSize: Joi.number().integer().min(1).max(100).default(10),
+  limit: Joi.number().integer().min(1).max(100).default(10)
 });

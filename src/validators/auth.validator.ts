@@ -41,8 +41,8 @@ export const registerSchema = Joi.object({
       }
       
       if (errors.length > 0) {
-        return helpers.error('any.invalid', { 
-          message: `Password must contain ${errors.join(', ')}` 
+        return helpers.message({
+          custom: `Password must contain ${errors.join(', ')}`
         });
       }
       
@@ -51,6 +51,7 @@ export const registerSchema = Joi.object({
     .messages({
       'string.min': 'Password must be at least 8 characters long',
       'any.required': 'Password is required',
+      'any.custom': '{{#label}} {{#value}}', 
     }),
 });
 
