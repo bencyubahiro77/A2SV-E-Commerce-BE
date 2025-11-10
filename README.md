@@ -1,11 +1,10 @@
 # E-Commerce REST API
 
-A production-ready, scalable e-commerce REST API built with Node.js, Express, TypeScript, PostgreSQL, and Prisma ORM.
+A production-ready, scalable e-commerce REST API built with Node.js, Express, TypeScript, SQLite, and Prisma ORM.
 
 ## Prerequisites
 
 - Node.js (v18 or higher)
-- PostgreSQL (v14 or higher)
 - npm or yarn
 
 ## Installation

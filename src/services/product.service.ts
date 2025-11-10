@@ -7,7 +7,7 @@ import { CreateProductInput, UpdateProductInput, SearchProductsInput } from '../
 export const createProduct = async (input: CreateProductInput) => {
   const product = await prisma.product.create({
     data: {
-      name: input.name,
+      name: input.name.toLowerCase(),
       description: input.description,
       price: input.price,
       stock: input.stock,
@@ -36,11 +36,10 @@ export const getProducts = async (input: SearchProductsInput) => {
 
   const where = input.search
     ? {
-        name: {
-          contains: input.search,
-          mode: 'insensitive' as const,
-        },
-      }
+      name: {
+        contains: input.search.toLowerCase(),
+      },
+    }
     : {};
 
   const [products, totalCount] = await Promise.all([
@@ -109,8 +108,7 @@ export const updateProduct = async (id: string, input: UpdateProductInput) => {
       user: {
         select: {
           id: true,
-          username: true,
-          email: true,
+          username: true
         },
       },
     },

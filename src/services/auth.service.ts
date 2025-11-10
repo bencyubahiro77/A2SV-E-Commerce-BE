@@ -13,7 +13,7 @@ export const register = async (input: RegisterInput) => {
 
   // Sanitize inputs
   const sanitizedEmail = sanitizeEmail(email);
-  const sanitizedUsername = sanitizeUsername(username);
+  const sanitizedUsername = sanitizeUsername(username).toLowerCase();
 
   // Check if user already exists
   const existingUser = await prisma.user.findFirst({

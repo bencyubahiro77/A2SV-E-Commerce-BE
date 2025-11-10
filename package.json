@@ -1,7 +1,7 @@
 {
   "name": "ecommerce-api",
   "version": "1.0.0",
-  "description": "Production-ready E-commerce REST API with Node.js, Express, TypeScript, and PostgreSQL",
+  "description": "Production-ready E-commerce REST API with Node.js, Express, TypeScript, and SQLite",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon src/server.ts",
@@ -25,7 +25,7 @@
     "typescript",
     "express",
     "prisma",
-    "postgresql"
+    "sqlite"
   ],
   "author": "",
   "license": "ISC",
