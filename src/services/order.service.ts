@@ -27,7 +27,7 @@ export const createOrder = async (input: CreateOrderInput) => {
 
         if (product.stock < item.quantity) {
           throw new ValidationError(
-            `Insufficient stock for Product ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}`
+            `Insufficient stock for ${product.name}. Available: ${product.stock}, Requested: ${item.quantity}`
           );
         }
 
@@ -109,6 +109,9 @@ export const getUserOrders = async (userId: string) => {
   const orders = await prisma.order.findMany({
     where: {
       userId: userId,
+      orderItems: {
+        some: {}, 
+      },
     },
     orderBy: {
       createdAt: 'desc',

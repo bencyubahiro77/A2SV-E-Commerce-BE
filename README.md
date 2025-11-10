@@ -22,7 +22,7 @@ A production-ready e-commerce REST API built with Node.js, Express, TypeScript, 
 1. **Clone and install**
 ```bash
 git clone https://github.com/bencyubahiro77/A2SV-E-Commerce-BE.git
-cd E-Commerce-BE
+cd A2SV-E-Commerce-BE
 npm install
 ```
 
@@ -37,7 +37,12 @@ cp .env.example .env
 npm run db:setup
 ```
 
-4. **Run the application**
+4. **Add migration name**
+```bash
+# example: init
+```
+
+5. **Run the application**
 ```bash
 npm run dev
 ```

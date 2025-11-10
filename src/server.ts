@@ -13,8 +13,7 @@ const startServer = async () => {
     const server = app.listen(PORT, () => {
       logger.info(` Server is running on port ${PORT}`);
       logger.info(` Environment: ${process.env.NODE_ENV || 'development'}`);
-      logger.info(` API Base URL: http://localhost:${PORT}/api`);
-      logger.info(` Health Check: http://localhost:${PORT}/api/health`);
+      logger.info(` API Base URL: http://localhost:${PORT}/api-docs`);
     });
 
     // Graceful shutdown
