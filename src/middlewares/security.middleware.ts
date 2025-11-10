@@ -59,7 +59,6 @@ export const corsOptions = cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 });
 
-
 // Compression middleware
 export const compressionMiddleware = compression({
   filter: (req: Request, res: Response) => {
@@ -74,7 +73,7 @@ export const compressionMiddleware = compression({
 // Request logging middleware
 export const requestLogger = (req: Request, _res: Response, next: NextFunction) => {
   const start = Date.now();
-  
+
   _res.on('finish', () => {
     const duration = Date.now() - start;
     const logData = {
@@ -85,7 +84,7 @@ export const requestLogger = (req: Request, _res: Response, next: NextFunction) 
       ip: req.ip,
       userAgent: req.get('user-agent'),
     };
-    
+
     // Don't log in console to avoid clutter, winston handles it
     if (_res.statusCode >= 400) {
       require('../utils/logger').default.warn('Request completed with error', logData);
@@ -93,6 +92,6 @@ export const requestLogger = (req: Request, _res: Response, next: NextFunction) 
       require('../utils/logger').default.info('Request completed', logData);
     }
   });
-  
+
   next();
 };

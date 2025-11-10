@@ -6,7 +6,8 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: 'E-Commerce API Documentation',
       version: '1.0.0',
-      description: 'Production-ready E-commerce REST API with Node.js, Express, TypeScript, and PostgreSQL',
+      description:
+        'Production-ready E-commerce REST API with Node.js, Express, TypeScript, and PostgreSQL',
       contact: {
         name: 'API Support',
         email: 'bencyubahiro77@gmail.com',
@@ -20,7 +21,7 @@ const options: swaggerJsdoc.Options = {
       {
         url: 'http://localhost:5530',
         description: 'Base URL',
-      }
+      },
     ],
     components: {
       securitySchemes: {

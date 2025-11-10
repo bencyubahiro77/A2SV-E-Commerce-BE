@@ -1,10 +1,20 @@
 import { Response, NextFunction } from 'express';
-import { createProduct as createProductService, getProducts as getProductsService, getProductById as getProductByIdService, updateProduct as updateProductService, deleteProduct as deleteProductService } from '../services/product.service';
+import {
+  createProduct as createProductService,
+  getProducts as getProductsService,
+  getProductById as getProductByIdService,
+  updateProduct as updateProductService,
+  deleteProduct as deleteProductService,
+} from '../services/product.service';
 import { created, paginated, success } from '../utils/response';
 import { AuthenticatedRequest } from '../types/express.types';
 
 // Create a new product
-export const createProduct = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+export const createProduct = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const product = await createProductService({
       ...req.body,
@@ -17,10 +27,14 @@ export const createProduct = async (req: AuthenticatedRequest, res: Response, ne
 };
 
 // Get all products with pagination and search
-export const getProducts = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getProducts = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const result = await getProductsService(req.query);
-    
+
     paginated(
       res,
       'Products retrieved successfully',
@@ -35,7 +49,11 @@ export const getProducts = async (req: AuthenticatedRequest, res: Response, next
 };
 
 // Get product by ID
-export const getProductById = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+export const getProductById = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const product = await getProductByIdService(req.params.id);
     success(res, 'Product retrieved successfully', product);
@@ -45,7 +63,11 @@ export const getProductById = async (req: AuthenticatedRequest, res: Response, n
 };
 
 // Update product
-export const updateProduct = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+export const updateProduct = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     const product = await updateProductService(req.params.id, req.body);
     success(res, 'Product updated successfully', product);
@@ -55,7 +77,11 @@ export const updateProduct = async (req: AuthenticatedRequest, res: Response, ne
 };
 
 // Delete product
-export const deleteProduct = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+export const deleteProduct = async (
+  req: AuthenticatedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
     await deleteProductService(req.params.id);
     success(res, 'Product deleted successfully');

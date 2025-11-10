@@ -6,7 +6,6 @@ import { ConflictError, AuthenticationError } from '../utils/errors';
 import logger from '../utils/logger';
 import { RegisterInput, LoginInput } from '../types/auth.types';
 
-
 // Register a new user
 export const register = async (input: RegisterInput) => {
   const { username, email, password } = input;
@@ -18,10 +17,7 @@ export const register = async (input: RegisterInput) => {
   // Check if user already exists
   const existingUser = await prisma.user.findFirst({
     where: {
-      OR: [
-        { email: sanitizedEmail },
-        { username: sanitizedUsername },
-      ],
+      OR: [{ email: sanitizedEmail }, { username: sanitizedUsername }],
     },
   });
 

@@ -2,7 +2,6 @@ import jwt from 'jsonwebtoken';
 import { AuthenticationError } from './errors';
 import { JwtPayload } from '../types/express.types';
 
-
 const secret: string = process.env.JWT_SECRET || 'sD9!p@3kL0zT7xQr8Bv2FjN1rEw5uY';
 const expiresIn: string = process.env.JWT_EXPIRES_IN || '7d';
 
@@ -33,4 +32,3 @@ export const verifyToken = (token: string): JwtPayload => {
     }
   }
 };
-

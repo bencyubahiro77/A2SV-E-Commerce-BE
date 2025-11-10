@@ -4,7 +4,10 @@ import { ValidationError } from '../utils/errors';
 import { sanitizeObject } from '../utils/sanitizer';
 
 // Middleware to validate request data against Joi schema
-export const validate = (schema: Joi.ObjectSchema, property: 'body' | 'query' | 'params' = 'body') => {
+export const validate = (
+  schema: Joi.ObjectSchema,
+  property: 'body' | 'query' | 'params' = 'body'
+) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
       // Sanitize input before validation

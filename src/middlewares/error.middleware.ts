@@ -5,12 +5,7 @@ import logger from '../utils/logger';
 import { Prisma } from '@prisma/client';
 
 // Global error handling middleware
-export const errorHandler = (
-  err: Error,
-  req: Request,
-  res: Response,
-  _next: NextFunction
-) => {
+export const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
   // Log error
   logger.error('Error occurred:', {
     message: err.message,
@@ -41,9 +36,7 @@ export const errorHandler = (
   logger.error('Unexpected error:', err);
   return sendError(
     res,
-    process.env.NODE_ENV === 'production'
-      ? 'An unexpected error occurred'
-      : err.message,
+    process.env.NODE_ENV === 'production' ? 'An unexpected error occurred' : err.message,
     [],
     500
   );

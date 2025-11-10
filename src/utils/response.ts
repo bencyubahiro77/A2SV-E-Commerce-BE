@@ -1,7 +1,6 @@
 import { Response } from 'express';
 import { BaseResponse, PaginatedResponse } from '../types/response.types';
 
-
 // Send success response
 export const success = <T>(
   res: Response,

@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { createProduct, getProducts, getProductById, updateProduct, deleteProduct } from '../controllers/product.controller';
+import {
+  createProduct,
+  getProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+} from '../controllers/product.controller';
 import { authenticate, authorize } from '../middlewares/auth.middleware';
 import { validate } from '../middlewares/validate.middleware';
 import {
@@ -10,19 +16,9 @@ import {
 
 const router = Router();
 
-router.post(
-  '/',
-  authenticate,
-  authorize('ADMIN'),
-  validate(createProductSchema),
-  createProduct
-);
+router.post('/', authenticate, authorize('ADMIN'), validate(createProductSchema), createProduct);
 
-router.get(
-  '/',
-  validate(searchProductSchema, 'query'),
-  getProducts
-);
+router.get('/', validate(searchProductSchema, 'query'), getProducts);
 
 router.get('/:id', getProductById);
 
@@ -34,11 +30,6 @@ router.patch(
   updateProduct
 );
 
-router.delete(
-  '/:id',
-  authenticate,
-  authorize('ADMIN'),
-  deleteProduct
-);
+router.delete('/:id', authenticate, authorize('ADMIN'), deleteProduct);
 
 export default router;

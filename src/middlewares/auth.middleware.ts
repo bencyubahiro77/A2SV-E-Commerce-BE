@@ -4,7 +4,6 @@ import { verifyToken } from '../utils/jwt';
 import { AuthenticationError, AuthorizationError } from '../utils/errors';
 import logger from '../utils/logger';
 
-
 export const authenticate = (req: AuthenticatedRequest, _res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
@@ -12,8 +11,8 @@ export const authenticate = (req: AuthenticatedRequest, _res: Response, next: Ne
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       throw new AuthenticationError('No token provided');
     }
-    
-    const token = authHeader.substring(7); 
+
+    const token = authHeader.substring(7);
 
     // Verify and decode token
     const decoded = verifyToken(token);

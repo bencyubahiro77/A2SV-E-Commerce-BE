@@ -36,23 +36,27 @@ const createApp = (): Application => {
   app.use(rateLimiter);
 
   // Swagger documentation
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'E-Commerce API Docs',
-  }));
+  app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'E-Commerce API Docs',
+    })
+  );
 
   // Health check endpoint
   app.get('/health', (_req, res) => {
     res.status(200).json({ status: 'ok', version: 'v1' });
   });
 
-  // API routes 
+  // API routes
   app.use('/api/v1', routes);
 
   // 404 handler
   app.use(notFoundHandler);
 
-  // Global error handler 
+  // Global error handler
   app.use(errorHandler);
 
   logger.info('Express application configured');

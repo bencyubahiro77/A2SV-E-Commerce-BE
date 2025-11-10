@@ -56,7 +56,9 @@ const startServer = async () => {
     };
 
     process.on('uncaughtException', (error) => handleCriticalError(error, 'Uncaught Exception'));
-    process.on('unhandledRejection', (reason) => handleCriticalError(reason, 'Unhandled Rejection'));
+    process.on('unhandledRejection', (reason) =>
+      handleCriticalError(reason, 'Unhandled Rejection')
+    );
   } catch (error) {
     logger.error('Failed to start server:', error);
     process.exit(1);
