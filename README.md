@@ -53,6 +53,12 @@ The API will be available at `http://localhost:5530`
 
 Access interactive API docs at: `http://localhost:5530/api-docs`
 
+6. **Admin Credentials**
+```bash
+Email: admin@ecommerce.com
+Password: Admin@123456
+```
+
 ## Project Structure
 
 ```
